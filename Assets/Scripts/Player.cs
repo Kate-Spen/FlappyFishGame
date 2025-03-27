@@ -2,9 +2,22 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    //Animation stuff
+    private SpriteRenderer spriteRenderer;
+    public Sprite[] sprites;
+    private int spriteIndex;
+    //Control stuff
     private Vector3 direction;
     public float gravity = -9.8f;
     public float strength = 5f;
+    private void Awake()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+    }
+    private void Start()
+    {
+        InvokeRepeating(nameof(AnimateSprite), 0.15f, 0.15f);
+    }
     private void Update()
     {
        if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
@@ -30,5 +43,14 @@ public class Player : MonoBehaviour
         {
             FindObjectOfType<GameManager>().IncreaseScore();
         }
+    }
+    private void AnimateSprite()
+    {
+        spriteIndex++;
+        if (spriteIndex >= sprites.Length)
+        {
+            spriteIndex = 0;
+        }
+        spriteRenderer.sprite = sprites[spriteIndex];
     }
 }
