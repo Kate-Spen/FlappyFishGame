@@ -4,6 +4,8 @@ public class Player : MonoBehaviour
 {
     //Animation stuff
     private SpriteRenderer spriteRenderer;
+    private Rigidbody2D rb;
+    private AudioSource audioSource;
     public Sprite[] sprites;
     private int spriteIndex;
     //Control stuff
@@ -13,6 +15,7 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
     }
     private void Start()
     {
@@ -43,14 +46,19 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("Hit");
-        if (other.gameObject.tag == "Obstacle")
+        if (other.CompareTag("Obstacle"))
         {
-            FindObjectOfType<GameManager>().GameOver();
+            if (SoundPlayer.Instance != null)
+                SoundPlayer.Instance.PlaySound(SoundPlayer.Instance.splat);
+
+            GameManager.Instance?.GameOver();
         }
-        else if (other.gameObject.tag == "Scoring")
+        else if (other.CompareTag("Scoring"))
         {
-            FindObjectOfType<GameManager>().IncreaseScore();
+            if (SoundPlayer.Instance != null)
+                SoundPlayer.Instance.PlaySound(SoundPlayer.Instance.pop);
+
+            GameManager.Instance?.IncreaseScore();
         }
     }
     private void AnimateSprite()
